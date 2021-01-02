@@ -120,9 +120,15 @@ fn main() {
         let tween1 = count_up(screen.clone());
         let tween2 = linear(screen.clone());
         let tween3 = ease_in_cubic(screen.clone());
-        let tween4 = ease_out_cubic(screen);
-
+        let tween4 = ease_out_cubic(screen.clone());
         join!(tween1, tween2, tween3, tween4);
+
+        let tween2 = linear(screen.clone());
+        tween2.await;
+
+        let tween3 = ease_in_cubic(screen.clone());
+        let tween4 = ease_out_cubic(screen);
+        join!(tween3, tween4);
 
         for _ in 0..120 {
             next_frame().await;
