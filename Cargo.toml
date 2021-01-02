@@ -1,4 +1,5 @@
 [workspace]
 members = [
   "runtime_v1",
+  "use_v1_tween",
 ]
