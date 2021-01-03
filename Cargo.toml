@@ -3,4 +3,5 @@ members = [
   "runtime_v1",
   "use_v1_tween",
   "runtime_v2",
+  "use_v2_tween",
 ]
