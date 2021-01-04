@@ -5,4 +5,5 @@ members = [
   "runtime_v2",
   "use_v2_tween",
   "use_v2_keyevent",
+  "runtime_v3",
 ]
