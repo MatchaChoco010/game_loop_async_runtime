@@ -26,6 +26,7 @@ checksum = "7c36c10130df424b2f3552fcc2ddcd9b28a27b1e54b358b45874f88d1ca6888c"
 dependencies = [
  "bitflags",
  "crossterm_winapi",
+ "futures-core",
  "lazy_static",
  "libc",
  "mio",
@@ -422,6 +423,15 @@ dependencies = [
  "futures",
  "runtime_v1",
  "termion",
+]
+
+[[package]]
+name = "use_v2_keyevent"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "runtime_v2",
 ]
 
 [[package]]
