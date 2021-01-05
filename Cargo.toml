@@ -9,4 +9,5 @@ members = [
   "use_v3_tween",
   "use_v3_keyevent",
   "use_v3_keyevent_2",
+  "use_v3_task_order",
 ]

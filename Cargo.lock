@@ -469,6 +469,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "use_v3_task_order"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "runtime_v3",
+]
+
+[[package]]
 name = "use_v3_tween"
 version = "0.1.0"
 dependencies = [
