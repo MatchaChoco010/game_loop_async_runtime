@@ -451,6 +451,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "use_v3_keyevent"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "runtime_v3",
+]
+
+[[package]]
+name = "use_v3_keyevent_2"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "runtime_v3",
+]
+
+[[package]]
 name = "use_v3_tween"
 version = "0.1.0"
 dependencies = [
