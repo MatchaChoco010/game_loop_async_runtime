@@ -353,6 +353,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "runtime_v5"
+version = "0.1.0"
+dependencies = [
+ "futures",
+]
+
+[[package]]
 name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -507,6 +514,14 @@ dependencies = [
  "crossterm",
  "futures",
  "runtime_v4",
+]
+
+[[package]]
+name = "use_v5_thread_id"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "runtime_v5",
 ]
 
 [[package]]

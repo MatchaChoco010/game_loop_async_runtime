@@ -13,4 +13,6 @@ members = [
   "runtime_v4",
   "use_v4_task_order",
   "use_v4_tween",
+  "runtime_v5",
+  "use_v5_thread_id",
 ]
