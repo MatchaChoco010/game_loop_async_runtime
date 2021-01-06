@@ -1,4 +1,3 @@
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::future::Future;
@@ -10,6 +9,7 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use std::thread::{self, JoinHandle};
+use std::{cell::RefCell, time::Duration};
 
 use futures::task::ArcWake;
 
@@ -111,7 +111,7 @@ pub struct Runtime<T: Eq + Hash + Clone + Debug> {
     tasks: Rc<RefCell<HashMap<T, Vec<Task>>>>,
     wait_tasks: Rc<RefCell<HashMap<T, Vec<Task>>>>,
     activated_phase: Rc<RefCell<HashMap<u16, T>>>,
-    threads: Rc<[JoinHandle<()>; 2]>,
+    threads: Rc<RefCell<Vec<Option<JoinHandle<()>>>>>,
     receivers: Rc<[Receiver<Vec<Task>>; 2]>,
     senders: [Sender<Vec<Task>>; 2],
     thread_stop_flag: Arc<AtomicBool>,
@@ -125,9 +125,13 @@ impl<T: Eq + Hash + Clone + Debug> Runtime<T> {
         let (main_sender1, thread_receiver1) = channel();
         let stop_flag_thread1 = Arc::clone(&thread_stop_flag);
         let thread1 = thread::spawn(move || loop {
-            let tasks = thread_receiver1.recv().unwrap();
-            let wait_tasks = process_tasks(tasks);
-            thread_sender1.send(wait_tasks).unwrap();
+            match thread_receiver1.recv_timeout(Duration::from_millis(16)) {
+                Ok(tasks) => {
+                    let wait_tasks = process_tasks(tasks);
+                    thread_sender1.send(wait_tasks).unwrap();
+                }
+                Err(_) => (),
+            }
 
             if stop_flag_thread1.load(Ordering::Relaxed) {
                 break;
@@ -138,9 +142,13 @@ impl<T: Eq + Hash + Clone + Debug> Runtime<T> {
         let (main_sender2, thread_receiver2) = channel();
         let stop_flag_thread2 = Arc::clone(&thread_stop_flag);
         let thread2 = thread::spawn(move || loop {
-            let tasks = thread_receiver2.recv().unwrap();
-            let wait_tasks = process_tasks(tasks);
-            thread_sender2.send(wait_tasks).unwrap();
+            match thread_receiver2.recv_timeout(Duration::from_millis(16)) {
+                Ok(tasks) => {
+                    let wait_tasks = process_tasks(tasks);
+                    thread_sender2.send(wait_tasks).unwrap();
+                }
+                Err(_) => (),
+            }
 
             if stop_flag_thread2.load(Ordering::Relaxed) {
                 break;
@@ -152,7 +160,7 @@ impl<T: Eq + Hash + Clone + Debug> Runtime<T> {
             tasks: Rc::new(RefCell::new(HashMap::new())),
             wait_tasks: Rc::new(RefCell::new(HashMap::new())),
             activated_phase: Rc::new(RefCell::new(HashMap::new())),
-            threads: Rc::new([thread1, thread2]),
+            threads: Rc::new(RefCell::new(vec![Some(thread1), Some(thread2)])),
             receivers: Rc::new([main_receiver1, main_receiver2]),
             senders: [main_sender1, main_sender2],
             thread_stop_flag,
@@ -252,5 +260,7 @@ impl<T: Eq + Hash + Clone + Debug> Runtime<T> {
 impl<T: Eq + Hash + Clone + Debug> Drop for Runtime<T> {
     fn drop(&mut self) {
         self.thread_stop_flag.store(true, Ordering::Relaxed);
+        self.threads.borrow_mut()[0].take().unwrap().join().unwrap();
+        self.threads.borrow_mut()[1].take().unwrap().join().unwrap();
     }
 }
