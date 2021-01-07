@@ -584,6 +584,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "use_v5_cli_game_2"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "futures",
+ "rand",
+ "runtime_v5",
+]
+
+[[package]]
 name = "use_v5_thread_id"
 version = "0.1.0"
 dependencies = [
