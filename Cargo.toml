@@ -15,4 +15,5 @@ members = [
   "use_v4_tween",
   "runtime_v5",
   "use_v5_thread_id",
+  "use_v5_cli_game",
 ]
